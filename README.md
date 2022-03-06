@@ -8,4 +8,4 @@ Version](https://img.shields.io/github/go-mod/go-version/rwxrob/json)](https://t
 Card](https://goreportcard.com/badge/github.com/rwxrob/json)](https://goreportcard.com/report/github.com/rwxrob/json)
 
 * [Printer Interface](json.go#L49)
-* [Standard JSON Escape](json.go#62)
+* [Standard JSON Escape](json.go#L62)
