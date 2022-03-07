@@ -5,11 +5,11 @@ type as JSON where possible.
 package json
 
 // AsJSON specifies types that can represent themselves as JSON both in
-// a single-line form with no spaces and an indented ("pretty") form
-// with consistent 2-space indentation and separation.
+// a single-line form with no spaces and a long, indented form
+// with line returns and consistent 2-space indentation and separation.
 type AsJSON interface {
 	JSON() (string, error)  // single line, no spaces
-	JSONI() (string, error) // 2-space indent and separation
+	JSONL() (string, error) // 2-space indent and separation
 }
 
 // Stringer specifies that rwxrob/to.Stringer is fulfilled as JSON and
