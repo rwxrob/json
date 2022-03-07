@@ -16,8 +16,8 @@ func (s *$name) MarshalJSON() ([]byte, error) {
 }
 
 // JSON implements rwxrob/json.Printer.
-func (s *$name) JSON() string {b,_ :=s.MarshalJSON();return string(b)}
-func (s *$name) JSON() string {b,_ :=json.Marshal(s);return string(b)}
+func (s *$name) JSON() (string, error) {return s.MarshalJSON()}
+func (s *$name) JSON() (string, error) {return json.Marshal(s)}
 
 // JSONL implements rwxrob/json.Printer.
 func (s *$name) JSON() string {b,_ :=s.MarshalJSON();return string(b)}

@@ -4,16 +4,24 @@ type as JSON where possible.
 */
 package json
 
-// AsJSON specifies types that can represent themselves as JSON.
+// AsJSON specifies types that can represent themselves as JSON both in
+// a single-line form with no spaces and an indented ("pretty") form
+// with consistent 2-space indentation and separation.
 type AsJSON interface {
 	JSON() (string, error)  // single line, no spaces
-	JSONL() (string, error) // 2-space indent and separation
+	JSONI() (string, error) // 2-space indent and separation
 }
 
-// Stringer specifies that fmt.Stringer is fulfilled as JSON and will
-// log any error if encountered. See AsJSON.
+// Stringer specifies that rwxrob/to.Stringer is fulfilled as JSON and
+// will log any error if encountered. See AsJSON.
 type Stringer interface {
 	String() string
+}
+
+// StringerLong specifies that rwxrob/to.Stringer is fulfilled as JSONI
+// and will log any error if encountered. See AsJSON.
+type StringerLong interface {
+	StringLong() string
 }
 
 // Printer specifies methods for printing self as JSON and will log any
@@ -27,14 +35,14 @@ type Stringer interface {
 // testing.
 type Printer interface {
 	Print() string
-	PPrint() string
+	PrintLong() string
 }
 
 // Logger specifies methods for logging self as short and long JSON
 // printing separately to the log if any error.
 type Logger interface {
 	Log() string
-	PLog() string
+	LogLong() string
 }
 
 // Escape only escapes those runes that require it according to the JSON
