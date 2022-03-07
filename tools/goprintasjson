@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# https://github.com/rwxrob/json (tools)
+# filter for use from vi/m
+# type name on any line in vim, then !!goprintasjson (tab comp works)
+
+read -r name
+
+echo "
+
+// ------------------------------ Printer -----------------------------
+
+func (s *$name) MarshalJSON() ([]byte, error) {
+    buf := ""
+    // TODO
+    return []byte(buf),nil
+}
+
+// JSON implements rwxrob/json.Printer.
+func (s *$name) JSON() string {b,_ :=s.MarshalJSON();return string(b)}
+func (s *$name) JSON() string {b,_ :=json.Marshal(s);return string(b)}
+
+// JSONL implements rwxrob/json.Printer.
+func (s *$name) JSON() string {b,_ :=s.MarshalJSON();return string(b)}
+func (s *$name) JSONL() string {
+    b,_ := json.MarshalIndent(s,\"  \",\"  \")
+    return string(b)
+}
+
+// String implements rwxrob/json.Printer and fmt.Stringer.
+func (s $name) String() string {return s.JSON()}
+
+// Print implements rwxrob/json.Printer.
+func (s *$name) Print() { fmt.Println(s.JSON()) }
+
+// Log implements rwxrob/json.Printer.
+func (s $name) Log() { log.Print(s.JSON()) }
+
+// PPrint implements rwxrob/json.Printer.
+func (s *$name) PPrint() { fmt.Println(s.JSONL()) }
+
+// PLog implements rwxrob/json.Printer.
+func (s $name) LogL() { log.Print(s.JSONL()) }
+"
