@@ -8,19 +8,15 @@ package json
 // a single-line form with no spaces and a long, indented form
 // with line returns and consistent 2-space indentation and separation.
 type AsJSON interface {
-	JSON() (string, error)  // single line, no spaces
-	JSONL() (string, error) // 2-space indent and separation
+	JSON() ([]byte, error)  // single line, no spaces
+	JSONL() ([]byte, error) // 2-space indent and separation
 }
 
-// Stringer specifies that rwxrob/to.Stringer is fulfilled as JSON and
-// will log any error if encountered. See AsJSON.
+// Stringer specifies that rwxrob/io.Stringer interface is fulfilled as
+// JSON and adds StringLong for JSONL version. Errors must be logged.
+// See AsJSON.
 type Stringer interface {
 	String() string
-}
-
-// StringerLong specifies that rwxrob/to.Stringer is fulfilled as JSONI
-// and will log any error if encountered. See AsJSON.
-type StringerLong interface {
 	StringLong() string
 }
 
