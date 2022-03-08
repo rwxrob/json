@@ -35,7 +35,8 @@ type Printer interface {
 }
 
 // Logger specifies methods for logging self as short and long JSON
-// printing separately to the log if any error.
+// printing separately to the log if any error. The LogLong should print
+// a new log entry for each line written.
 type Logger interface {
 	Log() string
 	LogLong() string

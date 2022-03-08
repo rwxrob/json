@@ -55,5 +55,5 @@ func (s *$name) PrintLong() { fmt.Println(s.StringLong()) }
 func (s $name) Log() { log.Print(s.String()) }
 
 // LogLong implements rwxrob/json.Logger.
-func (s $name) LogLong() { log.Print(s.StringLong()) }
+func (s $name) LogLong() { each.Log(to.Lines(s.StringLong())) }
 "
