@@ -9,21 +9,21 @@ echo "
 
 // ---------------------------- marshaling ----------------------------
 
-func (s *$name) MarshalJSON() ([]byte, error) {
+func (s $name) MarshalJSON() ([]byte, error) {
     buf := ""
     // TODO
     return []byte(buf),nil
 }
 
 // JSONL implements rwxrob/json.AsJSON.
-func (s *$name) JSON() ([]byte, error) {return s.MarshalJSON()}
-func (s *$name) JSON() ([]byte, error) {return json.Marshal(s)}
+func (s $name) JSON() ([]byte, error) {return s.MarshalJSON()}
+func (s $name) JSON() ([]byte, error) {return json.Marshal(s)}
 
 // JSONL implements rwxrob/json.AsJSON.
-func (s *$name) JSONL() ([]byte, error) {
+func (s $name) JSONL() ([]byte, error) {
     return s.MarshalIndent(\"  \",\"  \")
 }
-func (s *$name) JSONL() ([]byte, error) {
+func (s $name) JSONL() ([]byte, error) {
     return json.MarshalIndent(s,\"  \",\"  \")
 }
 
@@ -46,10 +46,10 @@ func (s $name) StringLong() string {
 }
 
 // String implements rwxrob/json.Printer.
-func (s *$name) Print() { fmt.Println(s.String()) }
+func (s $name) Print() { fmt.Println(s.String()) }
 
 // PrintLong implements rwxrob/json.Printer.
-func (s *$name) PrintLong() { fmt.Println(s.StringLong()) }
+func (s $name) PrintLong() { fmt.Println(s.StringLong()) }
 
 // Log implements rwxrob/json.Logger.
 func (s $name) Log() { log.Print(s.String()) }

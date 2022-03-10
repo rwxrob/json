@@ -1,8 +1,17 @@
 /*
 Package json contains interface specifications for representing any Go
-type as JSON where possible.
+type as JSON where possible. Using the goprintasjson tool allows for quick code generation of scaffolding to make any Go type easily used as JSON.
 */
 package json
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+
+	"github.com/rwxrob/fn/each"
+	"github.com/rwxrob/to"
+)
 
 // AsJSON specifies types that can represent themselves as JSON both in
 // a single-line form with no spaces and a long, indented form
@@ -69,3 +78,46 @@ func Escape(in string) string {
 	}
 	return out
 }
+
+// ------------------------------- Array ------------------------------
+
+// Array is a slice of strings that knows how to marshal as JSON.
+type Array []string
+
+// JSONL implements rwxrob/json.AsJSON.
+func (s Array) JSON() ([]byte, error) { return json.Marshal(s) }
+
+// JSONL implements rwxrob/json.AsJSON.
+func (s Array) JSONL() ([]byte, error) {
+	return json.MarshalIndent(s, "  ", "  ")
+}
+
+// String implements rwxrob/json.Stringer and fmt.Stringer.
+func (s Array) String() string {
+	byt, err := s.JSON()
+	if err != nil {
+		log.Print(err)
+	}
+	return string(byt)
+}
+
+// StringLong implements rwxrob/json.Stringer.
+func (s Array) StringLong() string {
+	byt, err := s.JSONL()
+	if err != nil {
+		log.Print(err)
+	}
+	return string(byt)
+}
+
+// String implements rwxrob/json.Printer.
+func (s Array) Print() { fmt.Println(s.String()) }
+
+// PrintLong implements rwxrob/json.Printer.
+func (s Array) PrintLong() { fmt.Println(s.StringLong()) }
+
+// Log implements rwxrob/json.Logger.
+func (s Array) Log() { log.Print(s.String()) }
+
+// LogLong implements rwxrob/json.Logger.
+func (s Array) LogLong() { each.Log(to.Lines(s.StringLong())) }
