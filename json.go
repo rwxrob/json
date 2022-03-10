@@ -121,3 +121,56 @@ func (s Array) Log() { log.Print(s.String()) }
 
 // LogLong implements rwxrob/json.Logger.
 func (s Array) LogLong() { each.Log(to.Lines(s.StringLong())) }
+
+// ------------------------------ Object ------------------------------
+
+// Object represents any JSON-able struct
+type Object[T any] struct{ This T }
+
+// MarshalJSON implements rwxrob/json.AsJSON
+func (s Object[T]) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.This)
+}
+
+// UnmarshalJSON implements rwxrob/json.AsJSON
+func (s *Object[T]) UnmarshalJSON(b []byte) error {
+	return json.Unmarshal(b, &s.This)
+}
+
+// JSONL implements rwxrob/json.AsJSON.
+func (s Object[T]) JSON() ([]byte, error) { return json.Marshal(s) }
+
+// JSONL implements rwxrob/json.AsJSON.
+func (s Object[T]) JSONL() ([]byte, error) {
+	return json.MarshalIndent(s, "  ", "  ")
+}
+
+// String implements rwxrob/json.Stringer and fmt.Stringer.
+func (s Object[T]) String() string {
+	byt, err := s.JSON()
+	if err != nil {
+		log.Print(err)
+	}
+	return string(byt)
+}
+
+// StringLong implements rwxrob/json.Stringer.
+func (s Object[T]) StringLong() string {
+	byt, err := s.JSONL()
+	if err != nil {
+		log.Print(err)
+	}
+	return string(byt)
+}
+
+// String implements rwxrob/json.Printer.
+func (s Object[T]) Print() { fmt.Println(s.String()) }
+
+// PrintLong implements rwxrob/json.Printer.
+func (s Object[T]) PrintLong() { fmt.Println(s.StringLong()) }
+
+// Log implements rwxrob/json.Logger.
+func (s Object[T]) Log() { log.Print(s.String()) }
+
+// LogLong implements rwxrob/json.Logger.
+func (s Object[T]) LogLong() { each.Log(to.Lines(s.StringLong())) }

@@ -1,4 +1,4 @@
-# JSON Utilities and Marshaling in Go (1.18)
+# JSON Utilities and Marshaling in Go (1.18+)
 
 [![Go
 Version](https://img.shields.io/github/go-mod/go-version/rwxrob/json)](https://tip.golang.org/doc/go1.18)
@@ -8,3 +8,4 @@ Version](https://img.shields.io/github/go-mod/go-version/rwxrob/json)](https://t
 Card](https://goreportcard.com/badge/github.com/rwxrob/json)](https://goreportcard.com/report/github.com/rwxrob/json)
 
 * [Standard JSON Escape](json.go)
+* [Anything Marshaled as JSON](json_test.go)

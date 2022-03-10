@@ -108,3 +108,16 @@ func ExampleArray_LogLong() {
 	//     "bar"
 	//   ]
 }
+
+func ExampleObject_Print() {
+
+	type FooBar struct {
+		Foo string
+		Bar string
+	}
+
+	json.Object[FooBar]{FooBar{"FOO", "BAR"}}.Print()
+
+	// Output:
+	// {"Foo":"FOO","Bar":"BAR"}
+}
