@@ -1,4 +1,4 @@
-# JSON Utilities and Marshaling in Go (1.18+)
+# JSON Utilities and Marshaling in Go
 
 [![Go
 Version](https://img.shields.io/github/go-mod/go-version/rwxrob/json)](https://tip.golang.org/doc/go1.18)

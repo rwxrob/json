@@ -125,28 +125,28 @@ func (s Array) LogLong() { each.Log(to.Lines(s.StringLong())) }
 // ------------------------------ Object ------------------------------
 
 // Object represents any JSON-able struct
-type Object[T any] struct{ This T }
+type Object struct{ This any }
 
 // MarshalJSON implements rwxrob/json.AsJSON
-func (s Object[T]) MarshalJSON() ([]byte, error) {
+func (s Object) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.This)
 }
 
 // UnmarshalJSON implements rwxrob/json.AsJSON
-func (s *Object[T]) UnmarshalJSON(b []byte) error {
+func (s *Object) UnmarshalJSON(b []byte) error {
 	return json.Unmarshal(b, &s.This)
 }
 
 // JSONL implements rwxrob/json.AsJSON.
-func (s Object[T]) JSON() ([]byte, error) { return json.Marshal(s) }
+func (s Object) JSON() ([]byte, error) { return json.Marshal(s) }
 
 // JSONL implements rwxrob/json.AsJSON.
-func (s Object[T]) JSONL() ([]byte, error) {
+func (s Object) JSONL() ([]byte, error) {
 	return json.MarshalIndent(s, "  ", "  ")
 }
 
 // String implements rwxrob/json.Stringer and fmt.Stringer.
-func (s Object[T]) String() string {
+func (s Object) String() string {
 	byt, err := s.JSON()
 	if err != nil {
 		log.Print(err)
@@ -155,7 +155,7 @@ func (s Object[T]) String() string {
 }
 
 // StringLong implements rwxrob/json.Stringer.
-func (s Object[T]) StringLong() string {
+func (s Object) StringLong() string {
 	byt, err := s.JSONL()
 	if err != nil {
 		log.Print(err)
@@ -164,13 +164,13 @@ func (s Object[T]) StringLong() string {
 }
 
 // String implements rwxrob/json.Printer.
-func (s Object[T]) Print() { fmt.Println(s.String()) }
+func (s Object) Print() { fmt.Println(s.String()) }
 
 // PrintLong implements rwxrob/json.Printer.
-func (s Object[T]) PrintLong() { fmt.Println(s.StringLong()) }
+func (s Object) PrintLong() { fmt.Println(s.StringLong()) }
 
 // Log implements rwxrob/json.Logger.
-func (s Object[T]) Log() { log.Print(s.String()) }
+func (s Object) Log() { log.Print(s.String()) }
 
 // LogLong implements rwxrob/json.Logger.
-func (s Object[T]) LogLong() { each.Log(to.Lines(s.StringLong())) }
+func (s Object) LogLong() { each.Log(to.Lines(s.StringLong())) }
