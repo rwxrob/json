@@ -9,3 +9,4 @@ Card](https://goreportcard.com/badge/github.com/rwxrob/json)](https://goreportca
 
 * [Standard JSON Escape](json.go)
 * [Anything Marshaled as JSON](json_test.go)
+* [Marshal Remote JSON HTTP Requests](req_test.go)
