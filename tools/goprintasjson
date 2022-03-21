@@ -9,6 +9,8 @@ echo "
 
 // ---------------------------- marshaling ----------------------------
 
+// TODO change import "encoding/json" to "github.com/rwxrob/json"
+
 func (s $name) MarshalJSON() ([]byte, error) {
     buf := ""
     // TODO
