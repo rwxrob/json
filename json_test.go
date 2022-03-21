@@ -1,6 +1,7 @@
 package json_test
 
 import (
+	stdjson "encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -120,4 +121,42 @@ func ExampleObject_Print() {
 
 	// Output:
 	// {"Foo":"FOO","Bar":"BAR"}
+}
+
+func ExampleMarshal() {
+	m := map[string]string{"<foo>": "&bar"}
+
+	// the good way
+	buf, err := json.Marshal(m)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(buf))
+
+	// the broken encoding/json way
+	buf, err = stdjson.Marshal(m)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(buf))
+
+	// Output:
+	// {"<foo>":"&bar"}
+	// {"\u003cfoo\u003e":"\u0026bar"}
+
+}
+
+func ExampleUnmarshal() {
+	m := new(map[string]string)
+	if err := json.Unmarshal([]byte(`{"<foo>":"&bar"}`), m); err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(m)
+	if err := json.Unmarshal([]byte(`{"<foo>":"&bar"}`), m); err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(m)
+	// Output:
+	// &map[<foo>:&bar]
+	// &map[<foo>:&bar]
 }

@@ -5,9 +5,11 @@ type as JSON where possible. Using the goprintasjson tool allows for quick code 
 package json
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/rwxrob/fn/each"
 	"github.com/rwxrob/to"
@@ -77,6 +79,25 @@ func Escape(in string) string {
 		}
 	}
 	return out
+}
+
+// Marshal mimics json.Marshal from the encoding/json package without
+// the broken, unnecessary HTML escapes and extraneous newline that the
+// json.Encoder adds. Call this from your own MarshalJSON methods to get
+// JSON rendering that is more readable and compliant with the JSON
+// specification (unless you are using the extremely rare case of
+// dumping that into HTML, for some reason).
+func Marshal(v any) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	enc := json.NewEncoder(buf)
+	enc.SetEscapeHTML(false)
+	err := enc.Encode(v)
+	return []byte(strings.TrimSpace(buf.String())), err
+}
+
+// Unmarshal mimics json.Unmarshal from the encoding/json package.
+func Unmarshal(buf []byte, v any) error {
+	return json.Unmarshal(buf, v)
 }
 
 // ------------------------------- Array ------------------------------
