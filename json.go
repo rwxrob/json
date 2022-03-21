@@ -95,6 +95,17 @@ func Marshal(v any) ([]byte, error) {
 	return []byte(strings.TrimSpace(buf.String())), err
 }
 
+// MarshalIndent mimics json.Marshal from the encoding/json package but
+// without the escapes, etc. See Marshal.
+func MarshalIndent(v any, a, b string) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	enc := json.NewEncoder(buf)
+	enc.SetEscapeHTML(false)
+	enc.SetIndent(a, b)
+	err := enc.Encode(v)
+	return []byte(strings.TrimSpace(buf.String())), err
+}
+
 // Unmarshal mimics json.Unmarshal from the encoding/json package.
 func Unmarshal(buf []byte, v any) error {
 	return json.Unmarshal(buf, v)

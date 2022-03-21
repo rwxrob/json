@@ -146,6 +146,32 @@ func ExampleMarshal() {
 
 }
 
+func ExampleMarshalIndent() {
+	m := map[string]string{"<foo>": "&bar"}
+
+	// the good way
+	buf, err := json.MarshalIndent(m, " ", " ")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(buf))
+
+	// the broken encoding/json way
+	buf, err = stdjson.MarshalIndent(m, " ", " ")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(buf))
+
+	// Output:
+	// {
+	//   "<foo>": "&bar"
+	//  }
+	// {
+	//   "\u003cfoo\u003e": "\u0026bar"
+	//  }
+}
+
 func ExampleUnmarshal() {
 	m := new(map[string]string)
 	if err := json.Unmarshal([]byte(`{"<foo>":"&bar"}`), m); err != nil {
