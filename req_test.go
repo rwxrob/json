@@ -18,6 +18,14 @@ func ExampleReq() {
 	svr := ht.NewServer(handler)
 	defer svr.Close()
 
+	// serve get int
+	handler0 := _http.HandlerFunc(
+		func(w _http.ResponseWriter, r *_http.Request) {
+			fmt.Fprintf(w, `20220322075441`)
+		})
+	svr0 := ht.NewServer(handler0)
+	defer svr0.Close()
+
 	// serve post
 	handler1 := _http.HandlerFunc(
 		func(w _http.ResponseWriter, r *_http.Request) {
@@ -75,6 +83,12 @@ func ExampleReq() {
 	}
 	jsdata.Print()
 
+	anint := 0
+	if err := json.Req(`GET`, svr0.URL, nil, nil, &anint); err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(anint)
+
 	if err := json.Req(`POST`, svr1.URL, nil, nil, data); err != nil {
 		fmt.Println(err)
 	}
@@ -98,6 +112,7 @@ func ExampleReq() {
 	// Output:
 	// {"get":"","post":"","put":"","patch":"","delete":"","c":"o","i":"i"}
 	// {"get":"t","post":"","put":"","patch":"","delete":"","c":"o","i":"i"}
+	// 20220322075441
 	// {"get":"t","post":"t","put":"","patch":"","delete":"","c":"t","i":"i"}
 	// {"get":"t","post":"t","put":"t","patch":"","delete":"","c":"t","i":"i"}
 	// {"get":"t","post":"t","put":"t","patch":"t","delete":"","c":"t","i":"i"}
