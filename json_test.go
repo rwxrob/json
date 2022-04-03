@@ -3,8 +3,6 @@ package json_test
 import (
 	stdjson "encoding/json"
 	"fmt"
-	"log"
-	"os"
 
 	"github.com/rwxrob/fn"
 	"github.com/rwxrob/json"
@@ -19,108 +17,6 @@ func ExampleEscape() {
 	set.Map(json.Escape).Print()
 	// Output:
 	// <>&\"'\t\b\f\n\r\\\"💢д
-}
-
-func ExampleArray_JSON() {
-	list := json.Array([]string{"foo", "bar"})
-	byt, _ := list.JSON()
-	fmt.Println(string(byt))
-	// Output:
-	// ["foo","bar"]
-}
-
-func ExampleArray_JSONL() {
-	list := json.Array([]string{"foo", "bar"})
-	byt, _ := list.JSONL()
-	fmt.Println(string(byt))
-	// Output:
-	// [
-	//     "foo",
-	//     "bar"
-	//   ]
-}
-
-func ExampleArray_String() {
-	list := json.Array([]string{"foo", "bar"})
-	fmt.Println(list.String())
-	// Output:
-	// ["foo","bar"]
-}
-
-func ExampleArray_StringLong() {
-	list := json.Array([]string{"foo", "bar"})
-	fmt.Println(list.StringLong())
-	// Output:
-	// [
-	//     "foo",
-	//     "bar"
-	//   ]
-}
-
-func ExampleArray_Print() {
-	list := json.Array([]string{"foo", "bar"})
-	list.Print()
-	// Output:
-	// ["foo","bar"]
-}
-
-func ExampleArray_PrintLong() {
-	list := json.Array([]string{"foo", "bar"})
-	list.PrintLong()
-
-	//list.LogLong() // also check this to be sure one line per log line
-
-	// Output:
-	// [
-	//     "foo",
-	//     "bar"
-	//   ]
-}
-
-func ExampleArray_Log() {
-
-	// adjust log output for testing
-	log.SetOutput(os.Stdout)
-	log.SetFlags(0)
-	defer log.SetOutput(os.Stderr)
-	defer log.SetFlags(log.Flags())
-
-	list := json.Array([]string{"foo", "bar"})
-	list.Log()
-
-	// Output:
-	// ["foo","bar"]
-}
-
-func ExampleArray_LogLong() {
-
-	// adjust log output for testing
-	log.SetOutput(os.Stdout)
-	log.SetFlags(0)
-	defer log.SetOutput(os.Stderr)
-	defer log.SetFlags(log.Flags())
-
-	list := json.Array([]string{"foo", "bar"})
-	list.LogLong()
-
-	// Output:
-	// [
-	//     "foo",
-	//     "bar"
-	//   ]
-}
-
-func ExampleObject_Print() {
-
-	type FooBar struct {
-		Foo string
-		Bar string
-	}
-
-	json.Object{FooBar{"FOO", "BAR"}}.Print()
-
-	// Output:
-	// {"Foo":"FOO","Bar":"BAR"}
 }
 
 func ExampleMarshal() {
@@ -185,4 +81,62 @@ func ExampleUnmarshal() {
 	// Output:
 	// &map[<foo>:&bar]
 	// &map[<foo>:&bar]
+}
+
+func ExampleThis_string() {
+	this := json.This{"foo"}
+	this.Print()
+	this.This = "!some"
+	this.Print()
+	// Output:
+	// "foo"
+	// "!some"
+}
+
+func ExampleThis_numbers() {
+	this := json.This{23434}
+	this.Print()
+	this.This = -24.24234
+	this.Print()
+	// Output:
+	// 23434
+	// -24.24234
+}
+
+func ExampleThis_bool() {
+	this := json.This{true}
+	this.Print()
+	// Output:
+	// true
+}
+
+func ExampleThis_nil() {
+	this := json.This{nil}
+	this.Print()
+	// Output:
+	// null
+}
+
+func ExampleThis_slice() {
+	this := json.This{[]string{"foo", "bar"}}
+	this.Print()
+	// Output:
+	// ["foo","bar"]
+}
+
+func ExampleThis_map() {
+	this := json.This{map[string]string{"foo": "bar"}}
+	this.Print()
+	// Output:
+	// {"foo":"bar"}
+}
+
+func ExampleThis_struct() {
+	this := json.This{struct {
+		Foo   string
+		Slice []string
+	}{"foo", []string{"one", "two"}}}
+	this.Print()
+	// Output:
+	// {"Foo":"foo","Slice":["one","two"]}
 }

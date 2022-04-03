@@ -75,7 +75,7 @@ func ExampleReq() {
 		Changed: "o",
 		Ignored: "i",
 	}
-	jsdata := json.Object{data}
+	jsdata := json.This{data}
 	jsdata.Print()
 
 	if err := json.Req(`GET`, svr.URL, nil, nil, data); err != nil {

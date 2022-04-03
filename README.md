@@ -1,9 +1,5 @@
 # JSON Utilities and Marshaling in Go
 
-*Deprecation Warning: This package is no longer supported (other than
-security fixes). Use [rwxrob/yaml](https://github.com/rwxrob/yaml)
-instead.*
-
 [![Go
 Version](https://img.shields.io/github/go-mod/go-version/rwxrob/json)](https://tip.golang.org/doc/go1.18)
 [![GoDoc](https://godoc.org/github.com/rwxrob/json?status.svg)](https://godoc.org/github.com/rwxrob/json)

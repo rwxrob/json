@@ -10,27 +10,20 @@ import (
 	"fmt"
 	"log"
 	"strings"
-
-	"github.com/rwxrob/fn/each"
-	"github.com/rwxrob/to"
 )
 
-// AsJSON specifies types that can represent themselves as JSON both in
-// a single-line form with no spaces and a long, indented form
-// with line returns and consistent 2-space indentation and separation.
-type AsJSON interface {
-	JSON() ([]byte, error)  // single line, no spaces
-	JSONL() ([]byte, error) // 2-space indent and separation
-}
-
-// Stringer specifies that rwxrob/io.Stringer interface is fulfilled as
-// JSON and adds StringLong for JSONL version. Errors must be logged.
-// See AsJSON.
-type Stringer interface {
-	String() string
-	StringLong() string
-}
-
+// AsJSON specifies a type that must support marshaling using the
+// rwxrob/json package with its defaults for marshaling and unmarshaling
+// which do not have unnecessary escaping.
+//
+// String is from fmt.Stringer, but fulfilling this interface in this
+// package promises to render the string specifically using rwxrob/json
+// default output marshaling --- especially when it comes to consistent
+// indentation, wrapping, and escaping. While JSON is a flexible format,
+// consistency ensures the most efficient and sustainable creation of
+// tests and other systems that require such consistency, whether or not
+// dependency on such consistency is a "good idea".
+//
 // Printer specifies methods for printing self as JSON and will log any
 // error if encountered. Printer provides a consistent representation of
 // any structure such that it an easily be read and compared as JSON
@@ -40,20 +33,23 @@ type Stringer interface {
 // should be supported in any way that is it presented, some consistent
 // output makes for more consistent debugging, documentation, and
 // testing.
-type Printer interface {
-	Print() string
-	PrintLong() string
-}
-
-// Logger specifies methods for logging self as short and long JSON
-// printing separately to the log if any error. The LogLong should print
-// a new log entry for each line written.
-type Logger interface {
+//
+// AsJSON implementations must Print and Log the output of String from
+// the same interface.
+//
+// MarshalJSON and UnmarshalJSON must be explicitly defined and use the
+// rwxrob/json package to avoid confusion. Use of the helper json.This
+// struct may facilitate this for existing types that do not wish to
+// implement the full interface.
+type AsJSON interface {
+	JSON() ([]byte, error)
+	String() string
+	Print()
 	Log() string
-	LogLong() string
+	MarshalJSON() ([]byte, error)
+	UnmarshalJSON(buf []byte) error
 }
 
-// Escape only escapes those runes that require it according to the JSON
 // specification (unlike the encoding/json standard which defaults to
 // escaping many other characters as well unnecessarily).
 func Escape(in string) string {
@@ -86,7 +82,11 @@ func Escape(in string) string {
 // json.Encoder adds. Call this from your own MarshalJSON methods to get
 // JSON rendering that is more readable and compliant with the JSON
 // specification (unless you are using the extremely rare case of
-// dumping that into HTML, for some reason).
+// dumping that into HTML, for some reason). Note that this cannot be
+// called from any structs MarshalJSON method on itself because it will
+// cause infinite functional recursion. Write a proper MarshalJSON
+// method or create a dummy struct and call json.Marshal on that
+// instead.
 func Marshal(v any) ([]byte, error) {
 	buf := new(bytes.Buffer)
 	enc := json.NewEncoder(buf)
@@ -111,21 +111,26 @@ func Unmarshal(buf []byte, v any) error {
 	return json.Unmarshal(buf, v)
 }
 
-// ------------------------------- Array ------------------------------
+// This encapsulates anything with the AsJSON interface from this package
+// by simply assigning a new variable with that item as the only value
+// in the structure:
+//
+//     something := []string{"some","thing"}
+//     jsonified := json.This{something}
+//     jsonified.Print()
+//
+type This struct{ This any }
 
-// Array is a slice of strings that knows how to marshal as JSON.
-type Array []string
-
-// JSONL implements rwxrob/json.AsJSON.
-func (s Array) JSON() ([]byte, error) { return json.Marshal(s) }
-
-// JSONL implements rwxrob/json.AsJSON.
-func (s Array) JSONL() ([]byte, error) {
-	return json.MarshalIndent(s, "  ", "  ")
+// UnmarshalJSON implements AsJSON
+func (s *This) UnmarshalJSON(buf []byte) error {
+	return json.Unmarshal(buf, &s.This)
 }
 
-// String implements rwxrob/json.Stringer and fmt.Stringer.
-func (s Array) String() string {
+// JSON implements AsJSON.
+func (s This) JSON() ([]byte, error) { return json.Marshal(s.This) }
+
+// String implements AsJSON and logs any error.
+func (s This) String() string {
 	byt, err := s.JSON()
 	if err != nil {
 		log.Print(err)
@@ -133,76 +138,9 @@ func (s Array) String() string {
 	return string(byt)
 }
 
-// StringLong implements rwxrob/json.Stringer.
-func (s Array) StringLong() string {
-	byt, err := s.JSONL()
-	if err != nil {
-		log.Print(err)
-	}
-	return string(byt)
-}
+// Print implements AsJSON printing with fmt.Println (adding a line
+// return).
+func (s This) Print() { fmt.Println(s.String()) }
 
-// String implements rwxrob/json.Printer.
-func (s Array) Print() { fmt.Println(s.String()) }
-
-// PrintLong implements rwxrob/json.Printer.
-func (s Array) PrintLong() { fmt.Println(s.StringLong()) }
-
-// Log implements rwxrob/json.Logger.
-func (s Array) Log() { log.Print(s.String()) }
-
-// LogLong implements rwxrob/json.Logger.
-func (s Array) LogLong() { each.Log(to.Lines(s.StringLong())) }
-
-// ------------------------------ Object ------------------------------
-
-// Object represents any JSON-able struct
-type Object struct{ This any }
-
-// MarshalJSON implements rwxrob/json.AsJSON
-func (s Object) MarshalJSON() ([]byte, error) {
-	return json.Marshal(s.This)
-}
-
-// UnmarshalJSON implements rwxrob/json.AsJSON
-func (s *Object) UnmarshalJSON(b []byte) error {
-	return json.Unmarshal(b, &s.This)
-}
-
-// JSONL implements rwxrob/json.AsJSON.
-func (s Object) JSON() ([]byte, error) { return json.Marshal(s) }
-
-// JSONL implements rwxrob/json.AsJSON.
-func (s Object) JSONL() ([]byte, error) {
-	return json.MarshalIndent(s, "  ", "  ")
-}
-
-// String implements rwxrob/json.Stringer and fmt.Stringer.
-func (s Object) String() string {
-	byt, err := s.JSON()
-	if err != nil {
-		log.Print(err)
-	}
-	return string(byt)
-}
-
-// StringLong implements rwxrob/json.Stringer.
-func (s Object) StringLong() string {
-	byt, err := s.JSONL()
-	if err != nil {
-		log.Print(err)
-	}
-	return string(byt)
-}
-
-// String implements rwxrob/json.Printer.
-func (s Object) Print() { fmt.Println(s.String()) }
-
-// PrintLong implements rwxrob/json.Printer.
-func (s Object) PrintLong() { fmt.Println(s.StringLong()) }
-
-// Log implements rwxrob/json.Logger.
-func (s Object) Log() { log.Print(s.String()) }
-
-// LogLong implements rwxrob/json.Logger.
-func (s Object) LogLong() { each.Log(to.Lines(s.StringLong())) }
+// Log implements AsJSON.
+func (s This) Log() { log.Print(s.String()) }
