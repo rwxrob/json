@@ -7,6 +7,7 @@ Version](https://img.shields.io/github/go-mod/go-version/rwxrob/json)](https://t
 [![Go Report
 Card](https://goreportcard.com/badge/github.com/rwxrob/json)](https://goreportcard.com/report/github.com/rwxrob/json)
 
+* [AsJSON Interface](json.go)
 * [Standard JSON Escape](json.go)
 * [Better json.Marshal/Unmarshal](json_test.go)
 * [Anything Marshaled as JSON](json_test.go)
