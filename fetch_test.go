@@ -8,7 +8,7 @@ import (
 	"github.com/rwxrob/json"
 )
 
-func ExampleReq() {
+func ExampleFetch() {
 
 	// serve get
 	handler := _http.HandlerFunc(
@@ -78,33 +78,40 @@ func ExampleReq() {
 	jsdata := json.This{data}
 	jsdata.Print()
 
-	if err := json.Req(`GET`, svr.URL, nil, nil, data); err != nil {
+	req := &json.Request{URL: svr.URL, Into: data}
+
+	if err := json.Fetch(req); err != nil {
 		fmt.Println(err)
 	}
 	jsdata.Print()
 
 	anint := 0
-	if err := json.Req(`GET`, svr0.URL, nil, nil, &anint); err != nil {
+	req = &json.Request{URL: svr0.URL, Into: &anint}
+	if err := json.Fetch(req); err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(anint)
 
-	if err := json.Req(`POST`, svr1.URL, nil, nil, data); err != nil {
+	req = &json.Request{Method: `POST`, URL: svr1.URL, Into: data}
+	if err := json.Fetch(req); err != nil {
 		fmt.Println(err)
 	}
 	jsdata.Print()
 
-	if err := json.Req(`PUT`, svr2.URL, nil, nil, data); err != nil {
+	req = &json.Request{Method: `PUT`, URL: svr2.URL, Into: data}
+	if err := json.Fetch(req); err != nil {
 		fmt.Println(err)
 	}
 	jsdata.Print()
 
-	if err := json.Req(`PATCH`, svr3.URL, nil, nil, data); err != nil {
+	req = &json.Request{Method: `PATCH`, URL: svr3.URL, Into: data}
+	if err := json.Fetch(req); err != nil {
 		fmt.Println(err)
 	}
 	jsdata.Print()
 
-	if err := json.Req(`DELETE`, svr4.URL, nil, nil, data); err != nil {
+	req = &json.Request{Method: `DELETE`, URL: svr4.URL, Into: data}
+	if err := json.Fetch(req); err != nil {
 		fmt.Println(err)
 	}
 	jsdata.Print()
