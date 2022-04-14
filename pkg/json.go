@@ -10,6 +10,9 @@ import (
 	"fmt"
 	"log"
 	"strings"
+
+	"github.com/rwxrob/to"
+	yq "github.com/rwxrob/yq/pkg"
 )
 
 // AsJSON specifies a type that must support marshaling using the
@@ -144,3 +147,13 @@ func (s This) Print() { fmt.Println(s.String()) }
 
 // Log implements AsJSON.
 func (s This) Log() { log.Print(s.String()) }
+
+// Query provides YAML/JSON query responses.
+func (s This) Query(q string) (string, error) {
+	return yq.EvaluateToString(to.String(s.This), q)
+}
+
+// QueryPrint prints YAML/JSON query responses.
+func (s This) QueryPrint(q string) error {
+	return yq.Evaluate(to.String(s.This), q)
+}
