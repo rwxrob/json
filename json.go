@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/rwxrob/to"
-	yq "github.com/rwxrob/yq/pkg"
+	"github.com/rwxrob/yq"
 )
 
 // AsJSON specifies a type that must support marshaling using the
