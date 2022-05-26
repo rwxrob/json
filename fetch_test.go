@@ -5,7 +5,7 @@ import (
 	_http "net/http"
 	ht "net/http/httptest"
 
-	json "github.com/rwxrob/json/pkg"
+	json "github.com/rwxrob/json"
 )
 
 func ExampleFetch() {

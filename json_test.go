@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/rwxrob/fn"
-	json "github.com/rwxrob/json/pkg"
+	json "github.com/rwxrob/json"
 )
 
 func ExampleEscape() {
